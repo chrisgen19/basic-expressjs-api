@@ -1,99 +1,172 @@
-# Express.js TypeScript API
+# Express.js Authentication API
 
-A production-ready Express.js API built with TypeScript, Prisma, and comprehensive security middleware.
+A production-ready Express.js REST API with JWT authentication, role-based authorization, and protected CRUD endpoints.
 
 ## Features
 
-- **TypeScript** - Type safety and better developer experience
-- **Express.js** - Fast, unopinionated web framework
-- **Prisma** - Modern database ORM
-- **Security** - Helmet, CORS, rate limiting
-- **Authentication** - JWT with bcrypt password hashing
-- **Validation** - Zod schema validation
-- **Logging** - Morgan (dev) and Pino (production)
-- **Code Quality** - ESLint and Prettier
+- **JWT Authentication** - Access & refresh tokens with HTTP-only cookies
+- **Role-Based Authorization** - User and admin roles with protected endpoints
+- **TypeScript** - Full type safety throughout the application
+- **Prisma ORM** - Type-safe database access with PostgreSQL
+- **Request Validation** - Zod schemas for runtime validation
+- **Security** - bcrypt password hashing, Helmet, CORS, rate limiting
+- **Clean Architecture** - Controllers, services, repositories pattern
+- **Error Handling** - Centralized error handling with detailed responses
+- **Code Quality** - ESLint and Prettier configured
 
-## Prerequisites
+## Quick Start
 
-- Node.js (v16 or higher)
-- PostgreSQL database
-
-## Installation
-
-Dependencies are already installed. If you need to reinstall:
-
+### 1. Start Development Server
 ```bash
-npm install
+npm run dev
 ```
 
-## Environment Variables
+Server runs on http://localhost:3000
 
-Create a `.env` file (already created):
-
-```env
-DATABASE_URL="your-database-url"
-JWT_SECRET="your-secret-key"
-JWT_REFRESH_SECRET="your-refresh-secret-key"
-PORT=3000
-NODE_ENV=development
-```
-
-## Database Setup
-
-The database has been initialized and migrated. To run future migrations:
-
+### 2. Test the API
 ```bash
-npm run prisma:migrate
+# Health check
+curl http://localhost:3000/health
+
+# Register
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"TestPass123","name":"Test User"}'
+
+# Login
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"TestPass123"}'
 ```
 
-To open Prisma Studio (database GUI):
+## API Endpoints
 
-```bash
-npm run prisma:studio
-```
+### Public Endpoints
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login
+- `POST /api/auth/refresh` - Refresh access token
+- `GET /health` - Health check
 
-## Available Scripts
+### Protected Endpoints (Authenticated Users)
+- `POST /api/auth/logout` - Logout
+- `GET /api/users` - List users (with pagination & search)
+- `GET /api/users/:id` - Get user by ID
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run prisma:generate` - Generate Prisma client
-- `npm run prisma:migrate` - Run database migrations
-- `npm run prisma:studio` - Open Prisma Studio
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
+### Admin-Only Endpoints
+- `POST /api/users` - Create user
+- `PATCH /api/users/:id` - Update user
+- `DELETE /api/users/:id` - Delete user
+
+📖 **Full API documentation**: See [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
 ## Project Structure
 
 ```
 src/
-├── config/          # Configuration files
-├── controllers/     # Route controllers
-├── middleware/      # Custom middleware
-├── routes/          # API routes
+├── config/          # Configuration (env, JWT, CORS, database)
+├── controllers/     # HTTP request handlers
+├── middleware/      # Authentication, authorization, validation, rate limiting
+├── routes/          # Route definitions
 ├── services/        # Business logic
-├── types/           # TypeScript types
-├── utils/           # Utility functions
-└── index.ts         # Application entry point
+├── repositories/    # Database access layer
+├── schemas/         # Zod validation schemas
+├── utils/           # Helper functions (password, token)
+├── types/           # TypeScript type definitions
+├── app.ts           # Express app setup
+└── server.ts        # Server startup
 ```
 
-## Running the Application
+## Available Scripts
 
-Development mode:
 ```bash
-npm run dev
+npm run dev              # Development server with hot reload
+npm run build            # Build for production
+npm start                # Run production build
+npm run prisma:generate  # Generate Prisma client
+npm run prisma:migrate   # Run database migrations
+npm run prisma:studio    # Open Prisma Studio (DB GUI)
+npm run lint             # Run ESLint
+npm run format           # Format with Prettier
 ```
 
-Production mode:
+## Environment Variables
+
+The `.env` file is already configured. Update these for production:
+
+```env
+DATABASE_URL="postgres://..."
+JWT_SECRET="your-strong-secret"
+JWT_REFRESH_SECRET="your-strong-refresh-secret"
+JWT_ACCESS_EXPIRES_IN="15m"
+JWT_REFRESH_EXPIRES_IN="7d"
+PORT=3000
+NODE_ENV=development
+CORS_ORIGIN="*"
+```
+
+## Security Features
+
+- **Password Security**: bcrypt hashing (10 rounds)
+- **JWT Tokens**: Short-lived access (15min) + long-lived refresh (7d)
+- **HTTP-Only Cookies**: Secure refresh token storage
+- **Rate Limiting**: 5 req/15min for auth, 100 req/15min for API
+- **Request Validation**: Zod runtime validation
+- **Helmet**: Security HTTP headers
+- **CORS**: Configurable origin policy
+
+## Database Schema
+
+```prisma
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  name      String?
+  role      String   @default("user") // "user" | "admin"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+## Creating an Admin User
+
+After registering a regular user, promote them to admin:
+
 ```bash
-npm run build
-npm start
+# Open Prisma Studio
+npm run prisma:studio
+# Then edit the user's role to "admin" in the GUI
 ```
 
-## API Endpoints
+Or using SQL:
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
+```
 
-- `GET /` - Welcome message
-- `GET /health` - Health check endpoint
+## Documentation
+
+- [SETUP_GUIDE.md](SETUP_GUIDE.md) - Detailed setup and architecture guide
+- [API_DOCUMENTATION.md](API_DOCUMENTATION.md) - Complete API reference
+
+## Tech Stack
+
+- **Runtime**: Node.js with TypeScript
+- **Framework**: Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT (jsonwebtoken)
+- **Validation**: Zod
+- **Security**: bcrypt, helmet, express-rate-limit
+- **Dev Tools**: ts-node-dev, ESLint, Prettier
+
+## Production Checklist
+
+- [ ] Update JWT secrets to strong random values
+- [ ] Set `NODE_ENV=production`
+- [ ] Update `CORS_ORIGIN` to frontend domain
+- [ ] Enable HTTPS
+- [ ] Set up monitoring and logging
+- [ ] Configure database connection pooling
+- [ ] Review rate limiting settings
 
 ## License
 
