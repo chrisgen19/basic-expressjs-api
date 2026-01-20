@@ -1,5 +1,20 @@
 import prisma from '../config/database';
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
+
+// Define safe user type without password
+export type SafeUser = Omit<User, 'password'>;
+
+// Type for findMany with specific select
+type UserWithoutPassword = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    email: true;
+    name: true;
+    role: true;
+    createdAt: true;
+    updatedAt: true;
+  };
+}>;
 
 export class UserRepository {
   async create(data: {
@@ -40,7 +55,7 @@ export class UserRepository {
         name?: { contains: string; mode: 'insensitive' };
       }>;
     };
-  }): Promise<{ users: User[]; total: number }> {
+  }): Promise<{ users: UserWithoutPassword[]; total: number }> {
     const whereClause = options?.where || {};
 
     const [users, total] = await Promise.all([
@@ -55,23 +70,15 @@ export class UserRepository {
           role: true,
           createdAt: true,
           updatedAt: true,
-          password: false, // Exclude password
         },
       }),
       prisma.user.count({ where: whereClause }),
     ]);
 
-    return { users: users as User[], total };
+    return { users, total };
   }
 
-  async update(
-    id: string,
-    data: {
-      email?: string;
-      name?: string;
-      role?: string;
-    }
-  ): Promise<User> {
+  async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     return prisma.user.update({
       where: { id },
       data,

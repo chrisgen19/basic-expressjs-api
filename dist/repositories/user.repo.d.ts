@@ -1,4 +1,15 @@
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
+export type SafeUser = Omit<User, 'password'>;
+type UserWithoutPassword = Prisma.UserGetPayload<{
+    select: {
+        id: true;
+        email: true;
+        name: true;
+        role: true;
+        createdAt: true;
+        updatedAt: true;
+    };
+}>;
 export declare class UserRepository {
     create(data: {
         email: string;
@@ -25,16 +36,13 @@ export declare class UserRepository {
             }>;
         };
     }): Promise<{
-        users: User[];
+        users: UserWithoutPassword[];
         total: number;
     }>;
-    update(id: string, data: {
-        email?: string;
-        name?: string;
-        role?: string;
-    }): Promise<User>;
+    update(id: string, data: Prisma.UserUpdateInput): Promise<User>;
     delete(id: string): Promise<User>;
     exists(email: string): Promise<boolean>;
 }
 export declare const userRepository: UserRepository;
+export {};
 //# sourceMappingURL=user.repo.d.ts.map

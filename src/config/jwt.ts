@@ -3,11 +3,11 @@ import { config } from './env';
 export const jwtConfig = {
   access: {
     secret: config.jwt.accessSecret,
-    expiresIn: config.jwt.accessExpiresIn,
+    expiresIn: config.jwt.accessExpiresIn as string | number,
   },
   refresh: {
     secret: config.jwt.refreshSecret,
-    expiresIn: config.jwt.refreshExpiresIn,
+    expiresIn: config.jwt.refreshExpiresIn as string | number,
   },
 };
 

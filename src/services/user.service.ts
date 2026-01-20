@@ -1,6 +1,10 @@
 import { userRepository } from '../repositories/user.repo';
 import { hashPassword } from '../utils/password';
 import { CreateUserInput, UpdateUserInput, SearchUsersInput } from '../schemas/user.schema';
+import { Prisma } from '@prisma/client';
+
+// Type for user update data
+type UserUpdateData = Partial<Pick<Prisma.UserUpdateInput, 'email' | 'name' | 'role'>>;
 
 export class UserService {
   async createUser(data: CreateUserInput) {
@@ -106,7 +110,7 @@ export class UserService {
     }
 
     // Update user - filter out undefined values
-    const updateData: Record<string, string> = {};
+    const updateData: UserUpdateData = {};
     if (data.email !== undefined) updateData.email = data.email;
     if (data.name !== undefined) updateData.name = data.name;
     if (data.role !== undefined) updateData.role = data.role;

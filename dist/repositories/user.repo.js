@@ -40,12 +40,11 @@ class UserRepository {
                     role: true,
                     createdAt: true,
                     updatedAt: true,
-                    password: false, // Exclude password
                 },
             }),
             database_1.default.user.count({ where: whereClause }),
         ]);
-        return { users: users, total };
+        return { users, total };
     }
     async update(id, data) {
         return database_1.default.user.update({

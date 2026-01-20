@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ZodSchema } from 'zod';
 
 // Validate request body
-export const validateBody = (schema: ZodSchema) => {
+export const validateBody = <T extends ZodSchema>(schema: T) => {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const validated = schema.parse(req.body);
@@ -15,11 +15,14 @@ export const validateBody = (schema: ZodSchema) => {
 };
 
 // Validate query parameters
-export const validateQuery = (schema: ZodSchema) => {
+// Note: Express req.query is ParsedQs type, so we need to cast
+// The validated data is properly typed in the schema
+export const validateQuery = <T extends ZodSchema>(schema: T) => {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const validated = schema.parse(req.query);
-      req.query = validated as any;
+      // Store in req.query - Express typing requires cast
+      req.query = validated as typeof req.query;
       next();
     } catch (error) {
       next(error);
@@ -28,11 +31,12 @@ export const validateQuery = (schema: ZodSchema) => {
 };
 
 // Validate route parameters
-export const validateParams = (schema: ZodSchema) => {
+export const validateParams = <T extends ZodSchema>(schema: T) => {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const validated = schema.parse(req.params);
-      req.params = validated as any;
+      // Store in req.params - Express typing requires cast
+      req.params = validated as typeof req.params;
       next();
     } catch (error) {
       next(error);

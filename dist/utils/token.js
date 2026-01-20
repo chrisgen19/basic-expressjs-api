@@ -7,12 +7,14 @@ exports.verifyRefreshToken = exports.verifyAccessToken = exports.generateRefresh
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const jwt_1 = require("../config/jwt");
 const generateAccessToken = (payload) => {
+    // expiresIn from config is a string (e.g., '15m'), which SignOptions accepts
     return jsonwebtoken_1.default.sign(payload, jwt_1.jwtConfig.access.secret, {
         expiresIn: jwt_1.jwtConfig.access.expiresIn,
     });
 };
 exports.generateAccessToken = generateAccessToken;
 const generateRefreshToken = (payload) => {
+    // expiresIn from config is a string (e.g., '7d'), which SignOptions accepts
     return jsonwebtoken_1.default.sign(payload, jwt_1.jwtConfig.refresh.secret, {
         expiresIn: jwt_1.jwtConfig.refresh.expiresIn,
     });

@@ -16,10 +16,13 @@ const validateBody = (schema) => {
 };
 exports.validateBody = validateBody;
 // Validate query parameters
+// Note: Express req.query is ParsedQs type, so we need to cast
+// The validated data is properly typed in the schema
 const validateQuery = (schema) => {
     return (req, _res, next) => {
         try {
             const validated = schema.parse(req.query);
+            // Store in req.query - Express typing requires cast
             req.query = validated;
             next();
         }
@@ -34,6 +37,7 @@ const validateParams = (schema) => {
     return (req, _res, next) => {
         try {
             const validated = schema.parse(req.params);
+            // Store in req.params - Express typing requires cast
             req.params = validated;
             next();
         }
