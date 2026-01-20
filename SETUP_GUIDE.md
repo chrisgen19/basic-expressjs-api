@@ -1,5 +1,20 @@
 # Setup Guide - Express.js Auth API
 
+## ⚠️ SECURITY WARNING
+
+**IMPORTANT: This guide and the `.env` file contain live database credentials for demonstration purposes.**
+
+**Before committing or sharing this code:**
+1. ✅ The `.env` file is already in `.gitignore` - verify it stays there
+2. ⚠️ **NEVER** commit `.env` to version control
+3. ⚠️ **NEVER** publish this guide with real credentials to public repositories
+4. ✅ Use `.env.example` (which has placeholder values) for documentation
+5. 🔒 In production, use a secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.)
+6. 🔒 Rotate all credentials before deploying to production
+7. 🔒 Generate strong JWT secrets using: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
+
+---
+
 ## Project Overview
 
 A production-ready Express.js authentication API built with TypeScript, featuring:

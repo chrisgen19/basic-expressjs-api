@@ -147,6 +147,7 @@ UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
 
 - [SETUP_GUIDE.md](SETUP_GUIDE.md) - Detailed setup and architecture guide
 - [API_DOCUMENTATION.md](API_DOCUMENTATION.md) - Complete API reference
+- [SECURITY.md](SECURITY.md) - Security features and best practices
 
 ## Tech Stack
 

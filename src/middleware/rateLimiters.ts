@@ -9,6 +9,15 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Rate limiter for token refresh endpoint
+export const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 refresh requests per windowMs
+  message: 'Too many refresh attempts, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // General API rate limiter
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

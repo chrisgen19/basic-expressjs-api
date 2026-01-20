@@ -109,7 +109,7 @@ Login with email and password.
 ### POST /api/auth/refresh
 Refresh access token using refresh token.
 
-**Public endpoint** - Requires refresh token in cookie or body
+**Public endpoint** - Rate limited (10 requests per 15 minutes), validated
 
 **Request Body (optional):**
 ```json
@@ -118,11 +118,26 @@ Refresh access token using refresh token.
 }
 ```
 
+**Note:** Refresh token can be sent in request body OR automatically from HTTP-only cookie.
+
 **Response (200 OK):**
 ```json
 {
   "message": "Token refreshed successfully",
   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Error Response (401 Unauthorized):**
+```json
+{
+  "error": "Invalid refresh token"
+}
+```
+or
+```json
+{
+  "error": "Refresh token required"
 }
 ```
 
@@ -318,6 +333,7 @@ Delete a user.
 
 ### Rate Limiting
 - **Authentication endpoints** (`/api/auth/register`, `/api/auth/login`): 5 requests per 15 minutes per IP
+- **Token refresh endpoint** (`/api/auth/refresh`): 10 requests per 15 minutes per IP
 - **General API endpoints**: 100 requests per 15 minutes per IP
 
 ### Password Security
