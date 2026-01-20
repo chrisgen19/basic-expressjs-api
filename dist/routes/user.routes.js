@@ -12,7 +12,7 @@ const router = (0, express_1.Router)();
 router.use(authenticate_1.authenticate);
 router.use(rateLimiters_1.apiLimiter);
 // GET /users - Get all users (protected, any authenticated user)
-router.get('/', (0, validate_1.validate)(user_schema_1.searchUsersSchema), (req, res, next) => user_controller_1.userController.getAllUsers(req, res, next));
+router.get('/', (0, validate_1.validateQuery)(user_schema_1.searchUsersSchema), (req, res, next) => user_controller_1.userController.getAllUsers(req, res, next));
 // GET /users/:id - Get single user (protected, any authenticated user)
 router.get('/:id', (req, res, next) => user_controller_1.userController.getUser(req, res, next));
 // POST /users - Create user (protected, admin only)

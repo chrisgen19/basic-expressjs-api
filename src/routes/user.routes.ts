@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { userController } from '../controllers/user.controller';
-import { validate } from '../middleware/validate';
+import { validate, validateQuery } from '../middleware/validate';
 import { authenticate } from '../middleware/authenticate';
 import { authorize } from '../middleware/authorize';
 import { apiLimiter } from '../middleware/rateLimiters';
@@ -13,7 +13,7 @@ router.use(authenticate);
 router.use(apiLimiter);
 
 // GET /users - Get all users (protected, any authenticated user)
-router.get('/', validate(searchUsersSchema), (req, res, next) =>
+router.get('/', validateQuery(searchUsersSchema), (req, res, next) =>
   userController.getAllUsers(req, res, next)
 );
 

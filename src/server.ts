@@ -1,9 +1,9 @@
-import dotenv from 'dotenv';
+// Load environment variables BEFORE any imports that use them
+import 'dotenv/config';
+
 import app from './app';
 import { config } from './config/env';
 import prisma from './config/database';
-
-dotenv.config();
 
 const PORT = config.port;
 

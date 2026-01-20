@@ -73,8 +73,13 @@ export class AuthController {
   }
 
   async logout(_req: Request, res: Response): Promise<void> {
-    // Clear refresh token cookie
-    res.clearCookie('refreshToken');
+    // Clear refresh token cookie with same options used to set it
+    res.clearCookie('refreshToken', {
+      httpOnly: refreshTokenCookieOptions.httpOnly,
+      secure: refreshTokenCookieOptions.secure,
+      sameSite: refreshTokenCookieOptions.sameSite,
+      path: '/', // Must match the path used when setting the cookie
+    });
     res.status(200).json({ message: 'Logout successful' });
   }
 }
