@@ -42,7 +42,7 @@ export class UserController {
 
   async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const query: SearchUsersInput = req.query as any;
+      const query = req.query as SearchUsersInput;
       const result = await userService.getAllUsers(query);
 
       res.status(200).json(result);

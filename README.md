@@ -57,7 +57,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 - `PATCH /api/users/:id` - Update user
 - `DELETE /api/users/:id` - Delete user
 
-📖 **Full API documentation**: See [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+**Full API documentation**: See [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
 ## Project Structure
 
@@ -91,16 +91,18 @@ npm run format           # Format with Prettier
 
 ## Environment Variables
 
-The `.env` file is already configured. Update these for production:
+Create a `.env` file in the root directory. See `.env.example` for reference:
 
 ```env
-DATABASE_URL="postgres://..."
+DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
 JWT_SECRET="your-strong-secret"
 JWT_REFRESH_SECRET="your-strong-refresh-secret"
 JWT_ACCESS_EXPIRES_IN="15m"
 JWT_REFRESH_EXPIRES_IN="7d"
 PORT=3000
 NODE_ENV=development
+# Note: Using "*" disables credentials (cookies won't work)
+# For cookie support, set specific origin: CORS_ORIGIN="http://localhost:3001"
 CORS_ORIGIN="*"
 ```
 

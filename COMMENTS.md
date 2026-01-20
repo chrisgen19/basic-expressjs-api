@@ -22,3 +22,10 @@
 - src/index.ts, src/config/config.ts, src/middleware/errorHandler.ts appear to be legacy and unused (server.ts is the entry). Consider removing or aligning to avoid confusion.
 - README.md, SETUP_GUIDE.md, src/server.ts contain corrupted characters (dY, f-like glyphs). Clean and replace with normal text/bullets.
 - package.json main is "index.js" but build output is dist/server.js; update if the package is expected to be imported or executed via main.
+
+## Remaining items after latest update
+- src/controllers/user.controller.ts: still uses req.query as any even though validateQuery runs; cast to SearchUsersInput or use res.locals for validated query data.
+- SETUP_GUIDE.md: project structure still references src/config/config.ts, but the file is removed.
+- .env and SETUP_GUIDE.md still include live DATABASE_URL credentials; replace with placeholders before sharing.
+- README.md and SETUP_GUIDE.md show CORS_ORIGIN="*" but do not mention cookie credentials being disabled with "*"; align docs with .env notes.
+- README.md, SETUP_GUIDE.md, src/server.ts include non-ASCII characters (emoji/box drawing); replace if you need ASCII-only output.

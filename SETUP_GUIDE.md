@@ -1,17 +1,17 @@
 # Setup Guide - Express.js Auth API
 
-## ⚠️ SECURITY WARNING
+## SECURITY WARNING
 
-**IMPORTANT: This guide and the `.env` file contain live database credentials for demonstration purposes.**
+**IMPORTANT: This guide contains placeholder credentials for demonstration purposes.**
 
 **Before committing or sharing this code:**
-1. ✅ The `.env` file is already in `.gitignore` - verify it stays there
-2. ⚠️ **NEVER** commit `.env` to version control
-3. ⚠️ **NEVER** publish this guide with real credentials to public repositories
-4. ✅ Use `.env.example` (which has placeholder values) for documentation
-5. 🔒 In production, use a secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.)
-6. 🔒 Rotate all credentials before deploying to production
-7. 🔒 Generate strong JWT secrets using: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
+1. The `.env` file is already in `.gitignore` - verify it stays there
+2. **NEVER** commit `.env` to version control
+3. **NEVER** publish this guide with real credentials to public repositories
+4. Use `.env.example` (which has placeholder values) for documentation
+5. In production, use a secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.)
+6. Rotate all credentials before deploying to production
+7. Generate strong JWT secrets using: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
 
 ---
 
@@ -32,7 +32,6 @@ A production-ready Express.js authentication API built with TypeScript, featurin
 ```
 src/
 ├── config/
-│   ├── config.ts          # Legacy config (deprecated)
 │   ├── cors.ts            # CORS configuration
 │   ├── database.ts        # Prisma client instance
 │   ├── env.ts             # Environment configuration
@@ -71,10 +70,10 @@ src/
 ## Installation Steps
 
 ### 1. Environment Setup
-The `.env` file is already configured with your database. Review and update if needed:
+Create a `.env` file in the root directory with your configuration:
 
 ```env
-DATABASE_URL="postgres://postgres:31Ix8NcfXRtn03mgXgqKNdvSSiBb8N2Mjx6bhabq8sXmosPOCE5QfKEl1LQ96N0H@72.61.113.145:5432/expressjs"
+DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
 
 # Change these in production!
 JWT_SECRET="your-secret-key-change-this-in-production"
@@ -85,7 +84,9 @@ JWT_REFRESH_EXPIRES_IN="7d"
 PORT=3000
 NODE_ENV=development
 
-# Update this to your frontend URL in production
+# CORS: Using "*" disables credentials (cookies won't work)
+# For cookie support, set specific origin: CORS_ORIGIN="http://localhost:3001"
+# For production, use: CORS_ORIGIN="https://yourdomain.com"
 CORS_ORIGIN="*"
 ```
 
@@ -344,4 +345,4 @@ For issues or questions:
 
 ---
 
-Happy coding! 🚀
+Happy coding!

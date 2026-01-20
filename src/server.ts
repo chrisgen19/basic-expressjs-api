@@ -8,24 +8,24 @@ import prisma from './config/database';
 const PORT = config.port;
 
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📝 Environment: ${config.nodeEnv}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Environment: ${config.nodeEnv}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
 });
 
 // Graceful shutdown
 const gracefulShutdown = async () => {
-  console.log('\n🛑 Shutting down gracefully...');
+  console.log('\nShutting down gracefully...');
 
   server.close(async () => {
-    console.log('✅ HTTP server closed');
+    console.log('HTTP server closed');
 
     try {
       await prisma.$disconnect();
-      console.log('✅ Database connection closed');
+      console.log('Database connection closed');
       process.exit(0);
     } catch (error) {
-      console.error('❌ Error during shutdown:', error);
+      console.error('Error during shutdown:', error);
       process.exit(1);
     }
   });
