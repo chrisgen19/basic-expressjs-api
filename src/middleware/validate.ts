@@ -15,14 +15,13 @@ export const validateBody = <T extends ZodSchema>(schema: T) => {
 };
 
 // Validate query parameters
-// Note: Express req.query is ParsedQs type, so we need to cast
-// The validated data is properly typed in the schema
+// Note: In Express v5, req.query is read-only, so we store validated data in res.locals
 export const validateQuery = <T extends ZodSchema>(schema: T) => {
-  return (req: Request, _res: Response, next: NextFunction): void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const validated = schema.parse(req.query);
-      // Store in req.query - Express typing requires cast
-      req.query = validated as typeof req.query;
+      // Store validated query in res.locals for Express v5 compatibility
+      res.locals.validatedQuery = validated;
       next();
     } catch (error) {
       next(error);
